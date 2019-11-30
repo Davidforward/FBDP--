@@ -37,15 +37,15 @@
 
    `hadoop fs -put million_user_log.csv input5`
 
-   ![image-20191129221804837](images\image-20191129221804837.png)
+   ![image-20191129221804837](images/image-20191129221804837.png)
 
 2. 将代码打包后执行**第一个MapReduce程序**
 
    `elevencount.itemBeanhadoop jar eleven.jar elevenbuy.countDriver input5 output7_1`
 
-   ![image-20191129223155736](images\image-20191129223155736.png)
+   ![image-20191129223155736](images/image-20191129223155736.png)
 
-   ![image-20191129223310574](images\image-20191129223310574.png)
+   ![image-20191129223310574](images/image-20191129223310574.png)
 
 3. 将第一个MapReduce的输出作为第二个MapReduce程序的输入
 
@@ -55,19 +55,19 @@
 
    `hadoop fs -put part-r-00000 input8`
 
-   ![image-20191129223629202](images\image-20191129223629202.png)
+   ![image-20191129223629202](images/image-20191129223629202.png)
 
 4. 执行第二个MapReduce程序
 
    `hadoop jar eleven.jar popularitem.countDriver input8 output8`
 
-   ![image-20191129223812256](images\image-20191129223812256.png)
+   ![image-20191129223812256](images/image-20191129223812256.png)
 
 5. 第二个MapReduce程序将分省排序的结果输出，每个省独立一个输出
 
-   ![image-20191129224014285](images\image-20191129224014285.png)
+   ![image-20191129224014285](images/image-20191129224014285.png)
 
-   ![image-20191129224037574](images\image-20191129224037574.png)
+   ![image-20191129224037574](images/image-20191129224037574.png)
 
 6. 把结果从hdfs拿下来
 
@@ -75,7 +75,7 @@
 
    `docker cp ed2:/usr/local/hadoop/output_buy outputbuy/`
 
-   ![image-20191129224522586](images\image-20191129224522586.png)
+   ![image-20191129224522586](images/image-20191129224522586.png)
 
    - 其中输出文件尾号和省份的对应关系为：
 
@@ -96,7 +96,7 @@
 
 7. 以福建省为例，对应输出文件part-r-00003，看一下结果：
 
-   ![image-20191129225022547](images\image-20191129225022547.png)
+   ![image-20191129225022547](images/image-20191129225022547.png)
 
    福建省最多购买的商品ID是783997，双十一期间购买了10件
 
@@ -138,7 +138,7 @@
 
    `ls`
 
-   ![image-20191129230219997](images\image-20191129230219997.png)
+   ![image-20191129230219997](images/image-20191129230219997.png)
 
 2. 解压安装
 
@@ -150,7 +150,7 @@
 
    然后在hive-env.sh增加下面两行（说明hadoop的位置，和hive配置文件的位置）：
 
-   ![image-20191129231008278](images\image-20191129231008278.png)
+   ![image-20191129231008278](images/image-20191129231008278.png)
 
 4. 安装所遇到的坑和解决方案
 
@@ -182,7 +182,7 @@
 
 - 看一看导入的表格
 
-  ![image-20191129232719891](images\image-20191129232719891.png)
+  ![image-20191129232719891](images/image-20191129232719891.png)
 
 
 
@@ -190,7 +190,7 @@
 
 `select count(*) from eleven where action=2;`
 
-![image-20191129232940627](images\image-20191129232940627.png)
+![image-20191129232940627](images/image-20191129232940627.png)
 
 所以，精简数据集中有116856人次购买商品
 
@@ -198,7 +198,7 @@
 
 `select count(*) from eleven where action=2 group by user_id;`
 
-![image-20191129234705544](images\image-20191129234705544.png)
+![image-20191129234705544](images/image-20191129234705544.png)
 
 有37202条记录，说明有37202人购买了商品
 
@@ -208,21 +208,21 @@
 
 `select count(*) from eleven where gender='0';`
 
-![image-20191129233330204](images\image-20191129233330204.png)
+![image-20191129233330204](images/image-20191129233330204.png)
 
 `select count(*) from eleven where gender='0' and action=2;`
 
-![image-20191129233446359](images\image-20191129233446359.png)
+![image-20191129233446359](images/image-20191129233446359.png)
 
 所以，有39058/334018=11.69%的女性购买了商品
 
 `select count(*) from eleven where gender='1';`
 
-![image-20191129233638477](C:images\image-20191129233638477.png)
+![image-20191129233638477](C:images/image-20191129233638477.png)
 
 `select count(*) from eleven where gender='1' and action=2;`
 
-![image-20191129233727445](images\image-20191129233727445.png)
+![image-20191129233727445](images/image-20191129233727445.png)
 
 所以，有38932/333320=11.68%的男性购买了商品
 
@@ -230,10 +230,10 @@
 
 `select brand_id,count(*) from eleven group by brand_id order by -1*count(*) limit 10;`
 
-![image-20191129233927178](images\image-20191129233927178.png)
+![image-20191129233927178](images/image-20191129233927178.png)
 
 浏览次数前十的品牌为：
 
-![image-20191129234009086](images\image-20191129234009086.png)
+![image-20191129234009086](images/image-20191129234009086.png)
 
 （左边是品牌id,右边是浏览次数）
