@@ -218,7 +218,7 @@
 
 `select count(*) from eleven where gender='1';`
 
-![image-20191129233638477](C:images/image-20191129233638477.png)
+![image-20191129233638477](images/image-20191129233638477.png)
 
 `select count(*) from eleven where gender='1' and action=2;`
 
