@@ -25,7 +25,7 @@
 
 - 因为商品的参数不止一种，所以自定义一个结构类型itemBean.class
 - 为了实现从大到小排序，自定义一个结构类型longBean.class，通过改变其中的compareTo()函数改变排序的方向
-- 为了实现按省份分区，自己实现ProvincePartitioner.class，使最终输出结果分省份输出，每一个输出代表
+- 为了实现按省份分区，自己实现ProvincePartitioner.class，使最终输出结果分省份输出，每一个输出代表一个省份的结果
 
 ### 代码
 
@@ -204,7 +204,7 @@
 
 ### 查询双11那天男女买家购买商品的比例
 
-因为数据中同一个user_id可能在不同的记录中有不同的性别，所以这里仅从记录出发，查询男女买家购买商品的比例
+因为数据中同一个user_id可能在不同的记录中有不同的性别，所以这里先从记录出发，查询标注男女买家的记录购买商品的比例，然后再基于user_id的不同计算男女买家购买商品的比例：
 
 `select count(*) from eleven where gender='0';`
 
@@ -214,7 +214,7 @@
 
 ![image-20191129233446359](images/image-20191129233446359.png)
 
-所以，有39058/334018=11.69%的女性购买了商品
+所以，在所有标注为女性的记录中，有39058/334018=11.69%购买了商品
 
 `select count(*) from eleven where gender='1';`
 
@@ -224,7 +224,49 @@
 
 ![image-20191129233727445](images/image-20191129233727445.png)
 
-所以，有38932/333320=11.68%的男性购买了商品
+所以，在所有标注为男性的记录中，有38932/333320=11.68%购买了商品
+
+**以上是从记录出发，下面我们从user_id出发考虑女性和男性购买商品的比例：**
+
+先计算有多少个标注为女性的user_id:
+
+`select count(*) from eleven where gender='0' group by user_id;`
+
+![image-20191130152811606](images/image-20191130152811606.png)
+
+![image-20191130152822027](images/image-20191130152822027.png)
+
+有34619个标注为女性的user_id
+
+再看这些user_id有购买商品的人数：
+
+` select count(*) from eleven where gender='0' and action=2 group 
+by user_id;`
+
+![image-20191130153004949](images/image-20191130153004949.png)
+
+
+
+**所以，22477/34619=64.93%的女性购买了商品；**
+
+同理，先计算有多少个标注为男性的user_id：
+
+`select count(*) from eleven where gender='1' group by user_id;`
+
+![image-20191130153206424](images/image-20191130153206424.png)
+
+有34556个，再算这些user_id中有多少购买了商品：
+
+` select count(*) from eleven where gender='1' and action=2 group 
+by user_id;`
+
+![image-20191130153448091](images/image-20191130153448091.png)
+
+**所以，22413/34556=64.86%的男性购买了商品。**
+
+**综上，22477/34619=64.93%的女性购买了商品，22413/34556=64.86%的男性购买了商品。**
+
+
 
 ### 查询双11那天浏览次数前十的品牌
 
