@@ -193,31 +193,6 @@
 有37202条记录，说明有37202人购买了商品
 
 ### 查询双11那天男女买家购买商品的比例
-[^_^]:
-    commentted-out contents
-    should be shift to right by four spaces (`>>`).
-
-    因为数据中同一个user_id可能在不同的记录中有不同的性别，所以这里先从记录出发，查询标注男女买家的记录购买商品的比例，然后再基于user_id的不同计算男女买家购买商品的比例：
-
-    `select count(*) from eleven where gender='0';`
-
-    ![image-20191129233330204](images/image-20191129233330204.png)
-
-    `select count(*) from eleven where gender='0' and action=2;`
-
-    ![image-20191129233446359](images/image-20191129233446359.png)
-
-    所以，在所有**标注为女性的记录**中，有39058/334018=11.69%的记录购买了商品
-
-    `select count(*) from eleven where gender='1';`
-
-    ![image-20191129233638477](images/image-20191129233638477.png)
-
-    `select count(*) from eleven where gender='1' and action=2;`
-
-    ![image-20191129233727445](images/image-20191129233727445.png)
-
-    所以，在**所有标注为男性的记录**中，有38932/333320=11.68%的记录购买了商品
 
 #### **我们从*user_id出发*考虑女性和男性购买商品的比例：**
 
