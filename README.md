@@ -2,24 +2,22 @@
 
 # 金融大数据处理技术实验三实验报告
 
-171098547 郭泰麟 计算机与金融工程实验班
+## 阶段一：基于MapReduce找出双十一关注最多和购买最多的商品
 
-## 阶段一：基于$MapReduce$找出双十一关注最多和购买最多的商品
-
-### 阶段一任务（$MapReduce$）
+### 阶段一任务（MapReduce）
 
 - 精简数据集：淘宝双十一用户购物数据集（100万条），见附件 million_user_log.csv.zip
 
-- 基于精简数据集完成$MapReduce$作业：
+- 基于精简数据集完成MapReduce作业：
   - 统计各省的双十一前十热门关注产品（“点击+添加购物车+购买+关注”总量最多前10的产品）
   - 统计各省的双十一前十热门销售产品（购买最多前10的产品）
 
 ### 编程思路
 
-1. 首先考虑如何用$MapReduce$统计各省的双十一前十热门关注产品?
+1. 首先考虑如何用MapReduce统计各省的双十一前十热门关注产品?
 2. 编程方式可以分为两步走：
-   1. 第一步：写一个$MapReduce$程序实现商品关注的分省求和
-   2. 第二步：将第一步分省求和的结果作为输入，再写一个$MapReduce$程序按省分类从大到小排序输出，其中每个输出文件前10个商品就是对应省份的双十一前十热门关注产品
+   1. 第一步：写一个MapReduce程序实现商品关注的分省求和
+   2. 第二步：将第一步分省求和的结果作为输入，再写一个MapReduce程序按省分类从大到小排序输出，其中每个输出文件前10个商品就是对应省份的双十一前十热门关注产品
 
 - 统计双十一前十热门销售产品与统计双十一前十热门关注产品思路一致，实践中只有一行代码不同
 
@@ -43,7 +41,7 @@
 
    ![image-20191129221804837](images/image-20191129221804837.png)
 
-2. 将代码打包后执行**第一个$MapReduce$程序**
+2. 将代码打包后执行**第一个MapReduce程序**
 
    ```bash
    elevencount.itemBeanhadoop jar eleven.jar elevenbuy.countDriver input5 output7_1
@@ -53,7 +51,7 @@
 
    ![image-20191129223310574](images/image-20191129223310574.png)
 
-3. 将第一个$MapReduce$的输出作为第二个$MapReduce$程序的输入
+3. 将第一个$MapReduce$的输出作为第二个MapReduce程序的输入
 
    ```bash
    hadoop fs -get output7_1/part-r-00000
@@ -65,7 +63,7 @@
 
    ![image-20191129223629202](images/image-20191129223629202.png)
 
-4. 执行第二个$MapReduce$程序
+4. 执行第二个MapReduce程序
 
    ```powershell
    hadoop jar eleven.jar popularitem.countDriver input8 output8
@@ -73,7 +71,7 @@
 
    ![image-20191129223812256](images/image-20191129223812256.png)
 
-5. 第二个$MapReduce$程序将分省排序的结果输出，每个省独立一个输出
+5. 第二个MapReduce程序将分省排序的结果输出，每个省独立一个输出
 
    ![image-20191129224014285](images/image-20191129224014285.png)
 
@@ -140,11 +138,11 @@
 
    
 
-## 阶段二实验报告：$Hive$
+## 阶段二实验报告：Hive
 
-### $Hive$的安装
+### Hive的安装
 
-1. 先用$wget$方法从清华大学的镜像上下载Hive-3.1.2
+1. 先用wget方法从清华大学的镜像上下载Hive-3.1.2
 
    ```bash
    wget https://mirrors.tuna.tsinghua.edu.cn/apache/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz
@@ -329,19 +327,19 @@ select brand_id,count(*) from eleven group by brand_id order by -1*count(*) limi
 
 
 
-## 阶段三实验报告：$Spark$
+## 阶段三实验报告：Spark
 
 
 
-1、启动$spark-shell(scala)$之前，先启动一下$hadoop$，并用$jps$看一下进程
+1、启动spark-shell(scala)之前，先启动一下hadoop，并用jps看一下进程
 
 ![image-20191221154342704](images/image-20191221154342704.png)
 
-2、启动$spark-shell$
+2、启动spark-shell
 
 ![image-20191221154439406](images/image-20191221154439406.png)
 
-### 用$Spark$统计各省最多关注的产品类别前十
+### 用Spark统计各省最多关注的产品类别前十
 
 1、读入数据
 
@@ -351,7 +349,7 @@ val data=sc.textFile("input5/million_user_log.csv")
 
 ![image-20191221155018847](images/image-20191221155018847.png)
 
-2、将数据转换成$pair\ RDD$格式，并将同省同产品的数据累加
+2、将数据转换成pair RDD格式，并将同省同产品的数据累加
 
 ```scala
 val focusItem=data.map(x=>((x.split(",")(1),x.split(",")(10)),1)).reduceByKey{case (x,y)=>x+y}
@@ -373,9 +371,9 @@ tmp.map(group =>(group._1,group._2.toList.sortWith(_._2>_._2).take(10))).collect
 
 （产品ID，省份），点击+添加购物车+购买+关注数
 
-注意到省份在$docker$命令行中的输出中有一定乱码，这是因为$spark$对中文支持不够好，但这并不影响实验
+注意到省份在docker命令行中的输出中有一定乱码，这是因为spark对中文支持不够好，但这并不影响实验
 
-### 用$Spark$统计各省最多购买的产品类别前十
+### Spark统计各省最多购买的产品类别前十
 
 1、读入数据
 
@@ -415,25 +413,25 @@ tmp.map(group => (group._1,group._2.toList.sortWith(_._2>_._2).take(10))).collec
 
 (（产品ID,省份），购买次数）
 
-注意到$docker$命令行中省份为乱码，这是因为$spark$对中文的支持不够好，但这并不影响实验
+注意到docker命令行中省份为乱码，这是因为spark对中文的支持不够好，但这并不影响实验
 
-### 与$MapReduce$的结果比较
+### 与MapReduce的结果比较
 
-用$spark$做出来的结果与MapReduce做出来的结果是一致的，$spark$的优点便在与执行速度快、代码简洁，以前面在$MapReduce$阶段提到的福建双十一购买前十比较：
+用spark做出来的结果与MapReduce做出来的结果是一致的，spark的优点便在与执行速度快、代码简洁，以前面在MapReduce阶段提到的福建双十一购买前十比较：
 
-$Spark$的结果是这样的：
+Spark的结果是这样的：
 
 ![image-20191221160959783](images/image-20191221160959783.png)
 
-（$Spark$结果：福建双十一前十购买）
+（Spark结果：福建双十一前十购买）
 
-这与前文中$MapReduce$阶段做出来的福建双十一前十购买**是一致的**，**当然如果购买量相同的几个产品，哪个排在前面其实不重要，比如福建的数据有四个产品购买数为5，那么四个产品的内部排序不重要，它们的排名其实是并列的**
+这与前文中MapReduce阶段做出来的福建双十一前十购买**是一致的**，**当然如果购买量相同的几个产品，哪个排在前面其实不重要，比如福建的数据有四个产品购买数为5，那么四个产品的内部排序不重要，它们的排名其实是并列的**
 
 ![image-20191129225022547](images/image-20191129225022547.png)
 
-（$MapReduce$结果:福建双十一前十购买）
+（MapReduce结果:福建双十一前十购买）
 
-### 通过$Spark$查询双11那天浏览次数前十的品牌（与$Hive$作业对比）
+### 通过Spark查询双11那天浏览次数前十的品牌（与Hive作业对比）
 
 1、读入数据
 
@@ -463,21 +461,21 @@ focusBrand.sortBy(_._2,false).take(10).foreach(println)
 
 输出的结果为（品牌ID，浏览次数）
 
-与$Hive$作业对比：
+与Hive作业对比：
 
 ![image-20191129234009086](images/image-20191129234009086.png)
 
-（$Hive$）
+（Hive）
 
-**可见$Spark$的结果和$Hive$的结果完全一致。**
+**可见Spark的结果和Hive的结果完全一致。**
 
 
 
 ## 阶段四实验报告：预测回头客
 
-预测回头客我们依然使用$Spark$来做，但是与前面的实验不同，预测回头客需要使用到$MLlib$的包
+预测回头客我们依然使用Spark来做，但是与前面的实验不同，预测回头客需要使用到MLlib的包
 
-1、首先在$Spark-shell(scala)$里导入一下相关的包：
+1、首先在Spark-shell(scala)里导入一下相关的包：
 
 ```scala
 import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
@@ -501,7 +499,7 @@ val testData = sc.textFile("spark/test_after.csv")
 
 ![image-20191221162908019](images/image-20191221162908019.png)
 
-3、然后用$LabeledPoint$做一下标记，属性（是否回头客，1或0）标记为$Double$类型，特征值标记为$Double$的$Vectors$向量
+3、然后用LabeledPoint做一下标记，属性（是否回头客，1或0）标记为Double类型，特征值标记为Double的Vectors向量
 
 ```scala
 val train= trainData.map{x =>
@@ -604,7 +602,7 @@ println("Accuracy: "+accuracy)
 
 下面我们使用另一种机器学习算法：支持向量机，来做是否回头客的预测
 
-因为在上面我们已经导入了机器相关的$MLlib$的包，也处理了训练集和测试集，所以我们直接训练$SVM$模型：
+因为在上面我们已经导入了机器相关的MLlib的包，也处理了训练集和测试集，所以我们直接训练SVM模型：
 
 ```scala
 val model = SVMWithSGD.train(trainDataSet, 1000)
