@@ -21,7 +21,7 @@ public class countMapper extends Mapper<LongWritable, Text,itemBean,LongWritable
         String[] fields=line.split(",");
         //封装对象
         long action=Long.parseLong(fields[7]);
-        long focus=(action==0)?0:1;
+        long focus=1;
         long item_it=Long.parseLong(fields[1]);
         String province=fields[10];
         k.setItem_id(item_it);
